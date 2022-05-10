@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>template-deno-webapp</title>
+        <script type="module">
+            const oldLog = console.log;
+
+            console.log = (...args) => {
+                oldLog(...args);
+                const textarea = document.getElementById('console');
+
+                if (textarea) {
+                    args.forEach(arg => textarea.value += `${JSON.stringify(arg)}\n`);
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <h2>template-deno-webapp</h2>
+        <p>
+            Project template for a Deno based webapp with Deno and Rust based WASM library dependencies.
+        </p>
+        <label for="console">Console:</label><br/>
+        <textarea cols="80" rows="20" id="console"></textarea>
+        <script type="module">
+            import './mod.bundle.js';
+        </script>
+    </body>
+</html>
+

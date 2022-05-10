@@ -1,0 +1,22 @@
+from behave import when, then
+from selenium.webdriver.support.expected_conditions import presence_of_element_located
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.by import By
+
+
+@when('the webapp URL "{page}" is loaded')
+def step_impl(context, page):
+    url = "http://{}:{}/{}".format(context.address, context.port, page)
+    context.browser.get(url)
+
+
+@when('the page element with ID "{element_id}" is available')
+def step_impl(context, element_id):
+    WebDriverWait(context.browser, 3).until(presence_of_element_located((By.ID, element_id)))
+
+
+@then('the page element with ID "{element_id}" should have text "{message}"')
+def step_impl(context, element_id, message):
+    text = context.browser.find_element_by_id(element_id).get_property('value')
+
+    assert message in text
