@@ -9,10 +9,7 @@ jobs:
       - name: Deno Docs
         uses: flowscripter/.github/actions/generate-deno-docs@v1
   test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macOS-latest, windows-latest, ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Test Deno
         uses: flowscripter/.github/actions/run-deno-tests@v1
