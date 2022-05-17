@@ -40,6 +40,10 @@ Refer to [functional_tests/README.md](functional_tests/README.md)
 
 ## Documentation
 
+### Published Demo
+
+https://flowscripter.github.io/template-deno-webapp/
+
 ### Overview
 
 PNG image generated from `images/uml_diagram.mermaid`:
