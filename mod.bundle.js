@@ -11,8 +11,7 @@ var LogLevels;
     LogLevels2[LogLevels2["ERROR"] = 40] = "ERROR";
     LogLevels2[LogLevels2["CRITICAL"] = 50] = "CRITICAL";
 })(LogLevels || (LogLevels = {}));
-Object.keys(LogLevels).filter((key)=>isNaN(Number(key))
-);
+Object.keys(LogLevels).filter((key)=>isNaN(Number(key)));
 const byLevel = {
     [String(LogLevels.NOTSET)]: "NOTSET",
     [String(LogLevels.DEBUG)]: "DEBUG",
@@ -102,7 +101,7 @@ class Logger {
     get handlers() {
         return this.#handlers;
     }
-    _log(level, msg, ...args) {
+     #_log(level, msg, ...args) {
         if (this.level > level) {
             return msg instanceof Function ? undefined : msg;
         }
@@ -137,20 +136,20 @@ class Logger {
         }
         return "undefined";
     }
-    debug(msg, ...args) {
-        return this._log(LogLevels.DEBUG, msg, ...args);
+    debug(msg1, ...args1) {
+        return this.#_log(LogLevels.DEBUG, msg1, ...args1);
     }
-    info(msg, ...args) {
-        return this._log(LogLevels.INFO, msg, ...args);
+    info(msg2, ...args2) {
+        return this.#_log(LogLevels.INFO, msg2, ...args2);
     }
-    warning(msg, ...args) {
-        return this._log(LogLevels.WARNING, msg, ...args);
+    warning(msg3, ...args3) {
+        return this.#_log(LogLevels.WARNING, msg3, ...args3);
     }
-    error(msg, ...args) {
-        return this._log(LogLevels.ERROR, msg, ...args);
+    error(msg4, ...args4) {
+        return this.#_log(LogLevels.ERROR, msg4, ...args4);
     }
-    critical(msg, ...args) {
-        return this._log(LogLevels.CRITICAL, msg, ...args);
+    critical(msg5, ...args5) {
+        return this.#_log(LogLevels.CRITICAL, msg5, ...args5);
     }
 }
 const { Deno: Deno2  } = globalThis;
@@ -218,9 +217,9 @@ class DenoStdInternalError extends Error {
         this.name = "DenoStdInternalError";
     }
 }
-function assert(expr, msg = "") {
+function assert(expr, msg6 = "") {
     if (!expr) {
-        throw new DenoStdInternalError(msg);
+        throw new DenoStdInternalError(msg6);
     }
 }
 function copy(src, dst, off = 0) {
@@ -649,8 +648,8 @@ class BaseHandler {
     }
     handle(logRecord) {
         if (this.level > logRecord.level) return;
-        const msg = this.format(logRecord);
-        return this.log(msg);
+        const msg7 = this.format(logRecord);
+        return this.log(msg7);
     }
     format(logRecord) {
         if (this.formatter instanceof Function) {
@@ -670,27 +669,27 @@ class BaseHandler {
 }
 class ConsoleHandler extends BaseHandler {
     format(logRecord) {
-        let msg = super.format(logRecord);
+        let msg8 = super.format(logRecord);
         switch(logRecord.level){
             case LogLevels.INFO:
-                msg = blue(msg);
+                msg8 = blue(msg8);
                 break;
             case LogLevels.WARNING:
-                msg = yellow(msg);
+                msg8 = yellow(msg8);
                 break;
             case LogLevels.ERROR:
-                msg = red(msg);
+                msg8 = red(msg8);
                 break;
             case LogLevels.CRITICAL:
-                msg = bold(red(msg));
+                msg8 = bold(red(msg8));
                 break;
             default:
                 break;
         }
-        return msg;
+        return msg8;
     }
-    log(msg) {
-        console.log(msg);
+    log(msg9) {
+        console.log(msg9);
     }
 }
 class WriterHandler extends BaseHandler {
@@ -731,11 +730,11 @@ class FileHandler extends WriterHandler {
             this.flush();
         }
     }
-    log(msg) {
-        if (this._encoder.encode(msg).byteLength + 1 > this._buf.available()) {
+    log(msg10) {
+        if (this._encoder.encode(msg10).byteLength + 1 > this._buf.available()) {
             this.flush();
         }
-        this._buf.writeSync(this._encoder.encode(msg + "\n"));
+        this._buf.writeSync(this._encoder.encode(msg10 + "\n"));
     }
     flush() {
         if (this._buf?.buffered() > 0) {
@@ -786,13 +785,13 @@ class RotatingFileHandler extends FileHandler {
             this.#currentFileSize = (await Deno.stat(this._filename)).size;
         }
     }
-    log(msg) {
-        const msgByteLength = this._encoder.encode(msg).byteLength + 1;
+    log(msg11) {
+        const msgByteLength = this._encoder.encode(msg11).byteLength + 1;
         if (this.#currentFileSize + msgByteLength > this.#maxBytes) {
             this.rotateLogFiles();
             this.#currentFileSize = 0;
         }
-        super.log(msg);
+        super.log(msg11);
         this.#currentFileSize += msgByteLength;
     }
     rotateLogFiles() {
@@ -856,35 +855,35 @@ function getLogger(name) {
     }
     return result;
 }
-function debug(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger("default").debug(msg, ...args);
+function debug(msg12, ...args6) {
+    if (msg12 instanceof Function) {
+        return getLogger("default").debug(msg12, ...args6);
     }
-    return getLogger("default").debug(msg, ...args);
+    return getLogger("default").debug(msg12, ...args6);
 }
-function info(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger("default").info(msg, ...args);
+function info(msg13, ...args7) {
+    if (msg13 instanceof Function) {
+        return getLogger("default").info(msg13, ...args7);
     }
-    return getLogger("default").info(msg, ...args);
+    return getLogger("default").info(msg13, ...args7);
 }
-function warning(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger("default").warning(msg, ...args);
+function warning(msg14, ...args8) {
+    if (msg14 instanceof Function) {
+        return getLogger("default").warning(msg14, ...args8);
     }
-    return getLogger("default").warning(msg, ...args);
+    return getLogger("default").warning(msg14, ...args8);
 }
-function error(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger("default").error(msg, ...args);
+function error(msg15, ...args9) {
+    if (msg15 instanceof Function) {
+        return getLogger("default").error(msg15, ...args9);
     }
-    return getLogger("default").error(msg, ...args);
+    return getLogger("default").error(msg15, ...args9);
 }
-function critical(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger("default").critical(msg, ...args);
+function critical(msg16, ...args10) {
+    if (msg16 instanceof Function) {
+        return getLogger("default").critical(msg16, ...args10);
     }
-    return getLogger("default").critical(msg, ...args);
+    return getLogger("default").critical(msg16, ...args10);
 }
 async function setup(config) {
     state.config = {
@@ -951,8 +950,7 @@ var LogLevels1;
     LogLevels3[LogLevels3["ERROR"] = 40] = "ERROR";
     LogLevels3[LogLevels3["CRITICAL"] = 50] = "CRITICAL";
 })(LogLevels1 || (LogLevels1 = {}));
-Object.keys(LogLevels1).filter((key)=>isNaN(Number(key))
-);
+Object.keys(LogLevels1).filter((key)=>isNaN(Number(key)));
 const byLevel1 = {
     [String(LogLevels1.NOTSET)]: "NOTSET",
     [String(LogLevels1.DEBUG)]: "DEBUG",
@@ -979,12 +977,12 @@ function getLevelByName1(name) {
             throw new Error(`no log level found for "${name}"`);
     }
 }
-function getLevelName1(level) {
-    const levelName = byLevel1[level];
+function getLevelName1(level1) {
+    const levelName = byLevel1[level1];
     if (levelName) {
         return levelName;
     }
-    throw new Error(`no level name found for level: ${level}`);
+    throw new Error(`no level name found for level: ${level1}`);
 }
 class LogRecord1 {
     msg;
@@ -1024,8 +1022,8 @@ class Logger1 {
     get level() {
         return this.#level;
     }
-    set level(level) {
-        this.#level = level;
+    set level(level2) {
+        this.#level = level2;
     }
     get levelName() {
         return getLevelName1(this.#level);
@@ -1042,28 +1040,28 @@ class Logger1 {
     get handlers() {
         return this.#handlers;
     }
-    _log(level, msg, ...args) {
-        if (this.level > level) {
-            return msg instanceof Function ? undefined : msg;
+    _log(level3, msg17, ...args11) {
+        if (this.level > level3) {
+            return msg17 instanceof Function ? undefined : msg17;
         }
         let fnResult;
         let logMessage;
-        if (msg instanceof Function) {
-            fnResult = msg();
+        if (msg17 instanceof Function) {
+            fnResult = msg17();
             logMessage = this.asString(fnResult);
         } else {
-            logMessage = this.asString(msg);
+            logMessage = this.asString(msg17);
         }
         const record = new LogRecord1({
             msg: logMessage,
-            args: args,
-            level: level,
+            args: args11,
+            level: level3,
             loggerName: this.loggerName
         });
         this.#handlers.forEach((handler)=>{
             handler.handle(record);
         });
-        return msg instanceof Function ? fnResult : msg;
+        return msg17 instanceof Function ? fnResult : msg17;
     }
     asString(data) {
         if (typeof data === "string") {
@@ -1077,20 +1075,20 @@ class Logger1 {
         }
         return "undefined";
     }
-    debug(msg, ...args) {
-        return this._log(LogLevels1.DEBUG, msg, ...args);
+    debug(msg18, ...args12) {
+        return this._log(LogLevels1.DEBUG, msg18, ...args12);
     }
-    info(msg, ...args) {
-        return this._log(LogLevels1.INFO, msg, ...args);
+    info(msg19, ...args13) {
+        return this._log(LogLevels1.INFO, msg19, ...args13);
     }
-    warning(msg, ...args) {
-        return this._log(LogLevels1.WARNING, msg, ...args);
+    warning(msg20, ...args14) {
+        return this._log(LogLevels1.WARNING, msg20, ...args14);
     }
-    error(msg, ...args) {
-        return this._log(LogLevels1.ERROR, msg, ...args);
+    error(msg21, ...args15) {
+        return this._log(LogLevels1.ERROR, msg21, ...args15);
     }
-    critical(msg, ...args) {
-        return this._log(LogLevels1.CRITICAL, msg, ...args);
+    critical(msg22, ...args16) {
+        return this._log(LogLevels1.CRITICAL, msg22, ...args16);
     }
 }
 const { Deno: Deno1  } = globalThis;
@@ -1158,9 +1156,9 @@ class DenoStdInternalError1 extends Error {
         this.name = "DenoStdInternalError";
     }
 }
-function assert1(expr, msg = "") {
+function assert1(expr, msg23 = "") {
     if (!expr) {
-        throw new DenoStdInternalError1(msg);
+        throw new DenoStdInternalError1(msg23);
     }
 }
 function copy1(src, dst, off = 0) {
@@ -1589,8 +1587,8 @@ class BaseHandler1 {
     }
     handle(logRecord) {
         if (this.level > logRecord.level) return;
-        const msg = this.format(logRecord);
-        return this.log(msg);
+        const msg24 = this.format(logRecord);
+        return this.log(msg24);
     }
     format(logRecord) {
         if (this.formatter instanceof Function) {
@@ -1610,27 +1608,27 @@ class BaseHandler1 {
 }
 class ConsoleHandler1 extends BaseHandler1 {
     format(logRecord) {
-        let msg = super.format(logRecord);
+        let msg25 = super.format(logRecord);
         switch(logRecord.level){
             case LogLevels1.INFO:
-                msg = blue1(msg);
+                msg25 = blue1(msg25);
                 break;
             case LogLevels1.WARNING:
-                msg = yellow1(msg);
+                msg25 = yellow1(msg25);
                 break;
             case LogLevels1.ERROR:
-                msg = red1(msg);
+                msg25 = red1(msg25);
                 break;
             case LogLevels1.CRITICAL:
-                msg = bold1(red1(msg));
+                msg25 = bold1(red1(msg25));
                 break;
             default:
                 break;
         }
-        return msg;
+        return msg25;
     }
-    log(msg) {
-        console.log(msg);
+    log(msg26) {
+        console.log(msg26);
     }
 }
 class WriterHandler1 extends BaseHandler1 {
@@ -1671,11 +1669,11 @@ class FileHandler1 extends WriterHandler1 {
             this.flush();
         }
     }
-    log(msg) {
-        if (this._encoder.encode(msg).byteLength + 1 > this._buf.available()) {
+    log(msg27) {
+        if (this._encoder.encode(msg27).byteLength + 1 > this._buf.available()) {
             this.flush();
         }
-        this._buf.writeSync(this._encoder.encode(msg + "\n"));
+        this._buf.writeSync(this._encoder.encode(msg27 + "\n"));
     }
     flush() {
         if (this._buf?.buffered() > 0) {
@@ -1726,13 +1724,13 @@ class RotatingFileHandler1 extends FileHandler1 {
             this.#currentFileSize = (await Deno.stat(this._filename)).size;
         }
     }
-    log(msg) {
-        const msgByteLength = this._encoder.encode(msg).byteLength + 1;
+    log(msg28) {
+        const msgByteLength = this._encoder.encode(msg28).byteLength + 1;
         if (this.#currentFileSize + msgByteLength > this.#maxBytes) {
             this.rotateLogFiles();
             this.#currentFileSize = 0;
         }
-        super.log(msg);
+        super.log(msg28);
         this.#currentFileSize += msgByteLength;
     }
     rotateLogFiles() {
@@ -1796,35 +1794,35 @@ function getLogger1(name) {
     }
     return result;
 }
-function debug1(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger1("default").debug(msg, ...args);
+function debug1(msg29, ...args17) {
+    if (msg29 instanceof Function) {
+        return getLogger1("default").debug(msg29, ...args17);
     }
-    return getLogger1("default").debug(msg, ...args);
+    return getLogger1("default").debug(msg29, ...args17);
 }
-function info1(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger1("default").info(msg, ...args);
+function info1(msg30, ...args18) {
+    if (msg30 instanceof Function) {
+        return getLogger1("default").info(msg30, ...args18);
     }
-    return getLogger1("default").info(msg, ...args);
+    return getLogger1("default").info(msg30, ...args18);
 }
-function warning1(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger1("default").warning(msg, ...args);
+function warning1(msg31, ...args19) {
+    if (msg31 instanceof Function) {
+        return getLogger1("default").warning(msg31, ...args19);
     }
-    return getLogger1("default").warning(msg, ...args);
+    return getLogger1("default").warning(msg31, ...args19);
 }
-function error1(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger1("default").error(msg, ...args);
+function error1(msg32, ...args20) {
+    if (msg32 instanceof Function) {
+        return getLogger1("default").error(msg32, ...args20);
     }
-    return getLogger1("default").error(msg, ...args);
+    return getLogger1("default").error(msg32, ...args20);
 }
-function critical1(msg, ...args) {
-    if (msg instanceof Function) {
-        return getLogger1("default").critical(msg, ...args);
+function critical1(msg33, ...args21) {
+    if (msg33 instanceof Function) {
+        return getLogger1("default").critical(msg33, ...args21);
     }
-    return getLogger1("default").critical(msg, ...args);
+    return getLogger1("default").critical(msg33, ...args21);
 }
 async function setup1(config) {
     state1.config = {
@@ -1888,9 +1886,65 @@ function world() {
 const mod2 = {
     world
 };
-function hello() {
+const importMeta = {
+    url: "https://flowscripter.github.io/template-wasm-rust-library/flowscripter_template_wasm_rust_library.js",
+    main: false
+};
+let wasm;
+function add(a, b) {
+    const ret = wasm.add(a, b);
+    return ret;
+}
+async function load(module, imports) {
+    if (typeof Response === 'function' && module instanceof Response) {
+        if (typeof WebAssembly.instantiateStreaming === 'function') {
+            try {
+                return await WebAssembly.instantiateStreaming(module, imports);
+            } catch (e) {
+                if (module.headers.get('Content-Type') != 'application/wasm') {
+                    console.warn("`WebAssembly.instantiateStreaming` failed because your server does not serve wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n", e);
+                } else {
+                    throw e;
+                }
+            }
+        }
+        const bytes = await module.arrayBuffer();
+        return await WebAssembly.instantiate(bytes, imports);
+    } else {
+        const instance = await WebAssembly.instantiate(module, imports);
+        if (instance instanceof WebAssembly.Instance) {
+            return {
+                instance,
+                module
+            };
+        } else {
+            return instance;
+        }
+    }
+}
+async function init(input) {
+    if (typeof input === 'undefined') {
+        input = new URL('flowscripter_template_wasm_rust_library_bg.wasm', importMeta.url);
+    }
+    const imports = {};
+    if (typeof input === 'string' || typeof Request === 'function' && input instanceof Request || typeof URL === 'function' && input instanceof URL) {
+        input = fetch(input);
+    }
+    const { instance , module  } = await load(await input, imports);
+    wasm = instance.exports;
+    init.__wbindgen_wasm_module = module;
+    return wasm;
+}
+const mod3 = {
+    add: add,
+    default: init
+};
+async function hello() {
+    await mod3.default();
     mod.info("Hello");
     mod2.world();
+    mod.info("Hello");
+    mod.info(`World ${mod3.add(2, 2)}`);
 }
 export { hello as hello };
 hello();
