@@ -2,9 +2,9 @@
 
 #### Setup
 
-Ensure the webapp is built:
+Ensure the webapp is bundled:
 
-    deno compile --unstable ../mod.ts
+    deno bundle ../mod.ts ../html/mod.bundle.js
 
 Install requirements:
 
@@ -17,3 +17,7 @@ Install `geckodriver` from https://github.com/mozilla/geckodriver/releases and e
 Run the functional tests:
 
     behave
+
+To run with logging output from the test steps (this is the best set of arguments I can find):
+
+    behave --no-logcapture --no-color --logging-level=DEBUG 

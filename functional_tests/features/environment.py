@@ -43,6 +43,7 @@ def local_webserver(context):
 
 
 def before_all(context):
+    context.config.setup_logging()
     use_fixture(local_webserver, context)
     use_fixture(browser_firefox, context)
     context.address = address

@@ -19,7 +19,7 @@
 
 ## Development
 
-Run: `deno run mod.ts`
+Run: `deno run --allow-net mod.ts `
 
 Test: `deno test -A --unstable`
 
@@ -33,6 +33,8 @@ Verify: Browse to http://127.0.0.1:8000/index.html and check that the browser co
 
     INFO Hello
     INFO World
+    INFO Hello
+    INFO World 4
 
 ## Functional Tests
 

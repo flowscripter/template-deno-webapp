@@ -1,10 +1,14 @@
-import { log } from "../deps.ts";
-import { denoLib } from "../deps.ts";
+import { denoLib, log, wasmLib } from "../deps.ts";
 
 /**
  * Logs out some greetings.
  */
-export function hello(): void {
+export async function hello(): Promise<void> {
+  // init WASM module
+  await wasmLib.default();
+
   log.info("Hello");
   denoLib.world();
+  log.info("Hello");
+  log.info(`World ${wasmLib.add(2, 2)}`);
 }
