@@ -1,10 +1,9 @@
-import { log, denoLib, wasmLib } from "../deps.ts";
+import { denoLib, log, wasmLib } from "../deps.ts";
 
 /**
  * Logs out some greetings.
  */
 export async function hello(): Promise<void> {
-
   // init WASM module
   await wasmLib.default();
 
