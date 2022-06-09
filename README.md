@@ -7,19 +7,22 @@
 [![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/raw.githubusercontent.com/flowscripter/template-deno-webapp/main/mod.ts)
 [![license: MIT](https://img.shields.io/github/license/flowscripter/template-deno-webapp)](https://github.com/flowscripter/template-deno-webapp/blob/main/LICENSE)
 
-> Project template for a Deno based webapp with Deno and Rust based WASM library
-> dependencies.
+> Project template for a Deno based webapp with Deno and Rust based WASM library dependencies.
 
-## Usage
+## Project Template Usage
 
 1. Use as a
    [template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template)
    to create a new repository.
 2. Update links and references in `README.md`.
 
+## Hosted Webapp Demo
+
+Go to: https://flowscripter.github.io/template-deno-webapp/
+
 ## Development
 
-Run: `deno run --allow-net mod.ts `
+Run: `deno run --allow-net mod.ts`
 
 Test: `deno test -A --unstable`
 
@@ -42,15 +45,11 @@ Refer to [functional_tests/README.md](functional_tests/README.md)
 
 ## Documentation
 
-### Published Demo
-
-https://flowscripter.github.io/template-deno-webapp/
-
 ### Overview
 
 PNG image generated from `images/uml_diagram.mermaid`:
 
-![UML Diagram](images/uml_diagram.png "UML Diagram")
+![UML Diagram](https://raw.githubusercontent.com/flowscripter/template-deno-webapp/main/images/uml_diagram.png "UML Diagram")
 
 ### API
 
