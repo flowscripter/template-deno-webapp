@@ -29,7 +29,7 @@ def step_impl(context, element_id, message):
 
     WebDriverWait(context.browser, 3).until(element_value_is_non_empty((By.ID, element_id)))
 
-    text = context.browser.find_element_by_id(element_id).get_property('value')
+    text = context.browser.find_element(By.ID, element_id).get_property('value')
 
     log.debug('looking for "{}" in "{}"'.format(message, text))
 
