@@ -3,13 +3,13 @@
 // This code was bundled using `deno bundle` and it's not recommended to edit it manually
 
 var LogLevels;
-(function(LogLevels2) {
-    LogLevels2[LogLevels2["NOTSET"] = 0] = "NOTSET";
-    LogLevels2[LogLevels2["DEBUG"] = 10] = "DEBUG";
-    LogLevels2[LogLevels2["INFO"] = 20] = "INFO";
-    LogLevels2[LogLevels2["WARNING"] = 30] = "WARNING";
-    LogLevels2[LogLevels2["ERROR"] = 40] = "ERROR";
-    LogLevels2[LogLevels2["CRITICAL"] = 50] = "CRITICAL";
+(function(LogLevels) {
+    LogLevels[LogLevels["NOTSET"] = 0] = "NOTSET";
+    LogLevels[LogLevels["DEBUG"] = 10] = "DEBUG";
+    LogLevels[LogLevels["INFO"] = 20] = "INFO";
+    LogLevels[LogLevels["WARNING"] = 30] = "WARNING";
+    LogLevels[LogLevels["ERROR"] = 40] = "ERROR";
+    LogLevels[LogLevels["CRITICAL"] = 50] = "CRITICAL";
 })(LogLevels || (LogLevels = {}));
 Object.keys(LogLevels).filter((key)=>isNaN(Number(key)));
 const byLevel = {
@@ -136,24 +136,24 @@ class Logger {
         }
         return "undefined";
     }
-    debug(msg1, ...args1) {
-        return this.#_log(LogLevels.DEBUG, msg1, ...args1);
+    debug(msg, ...args) {
+        return this.#_log(LogLevels.DEBUG, msg, ...args);
     }
-    info(msg2, ...args2) {
-        return this.#_log(LogLevels.INFO, msg2, ...args2);
+    info(msg, ...args) {
+        return this.#_log(LogLevels.INFO, msg, ...args);
     }
-    warning(msg3, ...args3) {
-        return this.#_log(LogLevels.WARNING, msg3, ...args3);
+    warning(msg, ...args) {
+        return this.#_log(LogLevels.WARNING, msg, ...args);
     }
-    error(msg4, ...args4) {
-        return this.#_log(LogLevels.ERROR, msg4, ...args4);
+    error(msg, ...args) {
+        return this.#_log(LogLevels.ERROR, msg, ...args);
     }
-    critical(msg5, ...args5) {
-        return this.#_log(LogLevels.CRITICAL, msg5, ...args5);
+    critical(msg, ...args) {
+        return this.#_log(LogLevels.CRITICAL, msg, ...args);
     }
 }
-const { Deno: Deno2  } = globalThis;
-const noColor = typeof Deno2?.noColor === "boolean" ? Deno2.noColor : true;
+const { Deno: Deno1  } = globalThis;
+const noColor = typeof Deno1?.noColor === "boolean" ? Deno1.noColor : true;
 let enabled = !noColor;
 function code(open, close) {
     return {
@@ -162,8 +162,8 @@ function code(open, close) {
         regexp: new RegExp(`\\x1b\\[${close}m`, "g")
     };
 }
-function run(str, code1) {
-    return enabled ? `${code1.open}${str.replace(code1.regexp, code1.open)}${code1.close}` : str;
+function run(str, code) {
+    return enabled ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
 }
 function bold(str) {
     return run(str, code([
@@ -217,9 +217,9 @@ class DenoStdInternalError extends Error {
         this.name = "DenoStdInternalError";
     }
 }
-function assert(expr, msg6 = "") {
+function assert(expr, msg = "") {
     if (!expr) {
-        throw new DenoStdInternalError(msg6);
+        throw new DenoStdInternalError(msg);
     }
 }
 function copy(src, dst, off = 0) {
@@ -307,10 +307,10 @@ class BufReader {
         if (p.byteLength === 0) return rr;
         if (this.#r === this.#w) {
             if (p.byteLength >= this.#buf.byteLength) {
-                const rr = await this.#rd.read(p);
-                const nread = rr ?? 0;
+                const rr1 = await this.#rd.read(p);
+                const nread = rr1 ?? 0;
                 assert(nread >= 0, "negative read");
-                return rr;
+                return rr1;
             }
             this.#r = 0;
             this.#w = 0;
@@ -464,12 +464,12 @@ class BufReader {
         }
         return slice;
     }
-    async peek(n6) {
-        if (n6 < 0) {
+    async peek(n) {
+        if (n < 0) {
             throw Error("negative count");
         }
         let avail = this.#w - this.#r;
-        while(avail < n6 && avail < this.#buf.byteLength && !this.#eof){
+        while(avail < n && avail < this.#buf.byteLength && !this.#eof){
             try {
                 await this.#fill();
             } catch (err) {
@@ -489,12 +489,12 @@ class BufReader {
         }
         if (avail === 0 && this.#eof) {
             return null;
-        } else if (avail < n6 && this.#eof) {
+        } else if (avail < n && this.#eof) {
             return this.#buf.subarray(this.#r, this.#r + avail);
-        } else if (avail < n6) {
+        } else if (avail < n) {
             throw new BufferFullError(this.#buf.subarray(this.#r, this.#w));
         }
-        return this.#buf.subarray(this.#r, this.#r + n6);
+        return this.#buf.subarray(this.#r, this.#r + n);
     }
 }
 class AbstractBufBase {
@@ -648,8 +648,8 @@ class BaseHandler {
     }
     handle(logRecord) {
         if (this.level > logRecord.level) return;
-        const msg7 = this.format(logRecord);
-        return this.log(msg7);
+        const msg = this.format(logRecord);
+        return this.log(msg);
     }
     format(logRecord) {
         if (this.formatter instanceof Function) {
@@ -669,27 +669,27 @@ class BaseHandler {
 }
 class ConsoleHandler extends BaseHandler {
     format(logRecord) {
-        let msg8 = super.format(logRecord);
+        let msg = super.format(logRecord);
         switch(logRecord.level){
             case LogLevels.INFO:
-                msg8 = blue(msg8);
+                msg = blue(msg);
                 break;
             case LogLevels.WARNING:
-                msg8 = yellow(msg8);
+                msg = yellow(msg);
                 break;
             case LogLevels.ERROR:
-                msg8 = red(msg8);
+                msg = red(msg);
                 break;
             case LogLevels.CRITICAL:
-                msg8 = bold(red(msg8));
+                msg = bold(red(msg));
                 break;
             default:
                 break;
         }
-        return msg8;
+        return msg;
     }
-    log(msg9) {
-        console.log(msg9);
+    log(msg) {
+        console.log(msg);
     }
 }
 class WriterHandler extends BaseHandler {
@@ -730,11 +730,11 @@ class FileHandler extends WriterHandler {
             this.flush();
         }
     }
-    log(msg10) {
-        if (this._encoder.encode(msg10).byteLength + 1 > this._buf.available()) {
+    log(msg) {
+        if (this._encoder.encode(msg).byteLength + 1 > this._buf.available()) {
             this.flush();
         }
-        this._buf.writeSync(this._encoder.encode(msg10 + "\n"));
+        this._buf.writeSync(this._encoder.encode(msg + "\n"));
     }
     flush() {
         if (this._buf?.buffered() > 0) {
@@ -775,23 +775,23 @@ class RotatingFileHandler extends FileHandler {
                 }
             }
         } else if (this._mode === "x") {
-            for(let i = 1; i <= this.#maxBackupCount; i++){
-                if (await exists(this._filename + "." + i)) {
+            for(let i1 = 1; i1 <= this.#maxBackupCount; i1++){
+                if (await exists(this._filename + "." + i1)) {
                     this.destroy();
-                    throw new Deno.errors.AlreadyExists("Backup log file " + this._filename + "." + i + " already exists");
+                    throw new Deno.errors.AlreadyExists("Backup log file " + this._filename + "." + i1 + " already exists");
                 }
             }
         } else {
             this.#currentFileSize = (await Deno.stat(this._filename)).size;
         }
     }
-    log(msg11) {
-        const msgByteLength = this._encoder.encode(msg11).byteLength + 1;
+    log(msg) {
+        const msgByteLength = this._encoder.encode(msg).byteLength + 1;
         if (this.#currentFileSize + msgByteLength > this.#maxBytes) {
             this.rotateLogFiles();
             this.#currentFileSize = 0;
         }
-        super.log(msg11);
+        super.log(msg);
         this.#currentFileSize += msgByteLength;
     }
     rotateLogFiles() {
@@ -855,35 +855,35 @@ function getLogger(name) {
     }
     return result;
 }
-function debug(msg12, ...args6) {
-    if (msg12 instanceof Function) {
-        return getLogger("default").debug(msg12, ...args6);
+function debug(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger("default").debug(msg, ...args);
     }
-    return getLogger("default").debug(msg12, ...args6);
+    return getLogger("default").debug(msg, ...args);
 }
-function info(msg13, ...args7) {
-    if (msg13 instanceof Function) {
-        return getLogger("default").info(msg13, ...args7);
+function info(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger("default").info(msg, ...args);
     }
-    return getLogger("default").info(msg13, ...args7);
+    return getLogger("default").info(msg, ...args);
 }
-function warning(msg14, ...args8) {
-    if (msg14 instanceof Function) {
-        return getLogger("default").warning(msg14, ...args8);
+function warning(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger("default").warning(msg, ...args);
     }
-    return getLogger("default").warning(msg14, ...args8);
+    return getLogger("default").warning(msg, ...args);
 }
-function error(msg15, ...args9) {
-    if (msg15 instanceof Function) {
-        return getLogger("default").error(msg15, ...args9);
+function error(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger("default").error(msg, ...args);
     }
-    return getLogger("default").error(msg15, ...args9);
+    return getLogger("default").error(msg, ...args);
 }
-function critical(msg16, ...args10) {
-    if (msg16 instanceof Function) {
-        return getLogger("default").critical(msg16, ...args10);
+function critical(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger("default").critical(msg, ...args);
     }
-    return getLogger("default").critical(msg16, ...args10);
+    return getLogger("default").critical(msg, ...args);
 }
 async function setup(config) {
     state.config = {
@@ -900,27 +900,27 @@ async function setup(config) {
         handler.destroy();
     });
     state.handlers.clear();
-    const handlers1 = state.config.handlers || {};
-    for(const handlerName1 in handlers1){
-        const handler = handlers1[handlerName1];
+    const handlers = state.config.handlers || {};
+    for(const handlerName in handlers){
+        const handler = handlers[handlerName];
         await handler.setup();
-        state.handlers.set(handlerName1, handler);
+        state.handlers.set(handlerName, handler);
     }
     state.loggers.clear();
     const loggers = state.config.loggers || {};
     for(const loggerName in loggers){
         const loggerConfig = loggers[loggerName];
         const handlerNames = loggerConfig.handlers || [];
-        const handlers2 = [];
+        const handlers1 = [];
         handlerNames.forEach((handlerName)=>{
             const handler = state.handlers.get(handlerName);
             if (handler) {
-                handlers2.push(handler);
+                handlers1.push(handler);
             }
         });
         const levelName = loggerConfig.level || DEFAULT_LEVEL;
         const logger = new Logger(loggerName, levelName, {
-            handlers: handlers2
+            handlers: handlers1
         });
         state.loggers.set(loggerName, logger);
     }
@@ -942,13 +942,13 @@ const mod = await async function() {
     };
 }();
 var LogLevels1;
-(function(LogLevels3) {
-    LogLevels3[LogLevels3["NOTSET"] = 0] = "NOTSET";
-    LogLevels3[LogLevels3["DEBUG"] = 10] = "DEBUG";
-    LogLevels3[LogLevels3["INFO"] = 20] = "INFO";
-    LogLevels3[LogLevels3["WARNING"] = 30] = "WARNING";
-    LogLevels3[LogLevels3["ERROR"] = 40] = "ERROR";
-    LogLevels3[LogLevels3["CRITICAL"] = 50] = "CRITICAL";
+(function(LogLevels) {
+    LogLevels[LogLevels["NOTSET"] = 0] = "NOTSET";
+    LogLevels[LogLevels["DEBUG"] = 10] = "DEBUG";
+    LogLevels[LogLevels["INFO"] = 20] = "INFO";
+    LogLevels[LogLevels["WARNING"] = 30] = "WARNING";
+    LogLevels[LogLevels["ERROR"] = 40] = "ERROR";
+    LogLevels[LogLevels["CRITICAL"] = 50] = "CRITICAL";
 })(LogLevels1 || (LogLevels1 = {}));
 Object.keys(LogLevels1).filter((key)=>isNaN(Number(key)));
 const byLevel1 = {
@@ -977,12 +977,12 @@ function getLevelByName1(name) {
             throw new Error(`no log level found for "${name}"`);
     }
 }
-function getLevelName1(level1) {
-    const levelName = byLevel1[level1];
+function getLevelName1(level) {
+    const levelName = byLevel1[level];
     if (levelName) {
         return levelName;
     }
-    throw new Error(`no level name found for level: ${level1}`);
+    throw new Error(`no level name found for level: ${level}`);
 }
 class LogRecord1 {
     msg;
@@ -1022,8 +1022,8 @@ class Logger1 {
     get level() {
         return this.#level;
     }
-    set level(level2) {
-        this.#level = level2;
+    set level(level) {
+        this.#level = level;
     }
     get levelName() {
         return getLevelName1(this.#level);
@@ -1040,28 +1040,28 @@ class Logger1 {
     get handlers() {
         return this.#handlers;
     }
-     #_log(level3, msg17, ...args11) {
-        if (this.level > level3) {
-            return msg17 instanceof Function ? undefined : msg17;
+     #_log(level1, msg1, ...args1) {
+        if (this.level > level1) {
+            return msg1 instanceof Function ? undefined : msg1;
         }
-        let fnResult;
-        let logMessage;
-        if (msg17 instanceof Function) {
-            fnResult = msg17();
-            logMessage = this.asString(fnResult);
+        let fnResult1;
+        let logMessage1;
+        if (msg1 instanceof Function) {
+            fnResult1 = msg1();
+            logMessage1 = this.asString(fnResult1);
         } else {
-            logMessage = this.asString(msg17);
+            logMessage1 = this.asString(msg1);
         }
-        const record = new LogRecord1({
-            msg: logMessage,
-            args: args11,
-            level: level3,
+        const record1 = new LogRecord1({
+            msg: logMessage1,
+            args: args1,
+            level: level1,
             loggerName: this.loggerName
         });
         this.#handlers.forEach((handler)=>{
-            handler.handle(record);
+            handler.handle(record1);
         });
-        return msg17 instanceof Function ? fnResult : msg17;
+        return msg1 instanceof Function ? fnResult1 : msg1;
     }
     asString(data) {
         if (typeof data === "string") {
@@ -1075,24 +1075,24 @@ class Logger1 {
         }
         return "undefined";
     }
-    debug(msg1, ...args1) {
-        return this.#_log(LogLevels1.DEBUG, msg1, ...args1);
+    debug(msg, ...args) {
+        return this.#_log(LogLevels1.DEBUG, msg, ...args);
     }
-    info(msg2, ...args2) {
-        return this.#_log(LogLevels1.INFO, msg2, ...args2);
+    info(msg, ...args) {
+        return this.#_log(LogLevels1.INFO, msg, ...args);
     }
-    warning(msg3, ...args3) {
-        return this.#_log(LogLevels1.WARNING, msg3, ...args3);
+    warning(msg, ...args) {
+        return this.#_log(LogLevels1.WARNING, msg, ...args);
     }
-    error(msg4, ...args4) {
-        return this.#_log(LogLevels1.ERROR, msg4, ...args4);
+    error(msg, ...args) {
+        return this.#_log(LogLevels1.ERROR, msg, ...args);
     }
-    critical(msg5, ...args5) {
-        return this.#_log(LogLevels1.CRITICAL, msg5, ...args5);
+    critical(msg, ...args) {
+        return this.#_log(LogLevels1.CRITICAL, msg, ...args);
     }
 }
-const { Deno: Deno1  } = globalThis;
-const noColor1 = typeof Deno1?.noColor === "boolean" ? Deno1.noColor : true;
+const { Deno: Deno2  } = globalThis;
+const noColor1 = typeof Deno2?.noColor === "boolean" ? Deno2.noColor : true;
 let enabled1 = !noColor1;
 function code1(open, close) {
     return {
@@ -1101,8 +1101,8 @@ function code1(open, close) {
         regexp: new RegExp(`\\x1b\\[${close}m`, "g")
     };
 }
-function run1(str, code11) {
-    return enabled1 ? `${code11.open}${str.replace(code11.regexp, code11.open)}${code11.close}` : str;
+function run1(str, code) {
+    return enabled1 ? `${code.open}${str.replace(code.regexp, code.open)}${code.close}` : str;
 }
 function bold1(str) {
     return run1(str, code1([
@@ -1156,9 +1156,9 @@ class DenoStdInternalError1 extends Error {
         this.name = "DenoStdInternalError";
     }
 }
-function assert1(expr, msg18 = "") {
+function assert1(expr, msg = "") {
     if (!expr) {
-        throw new DenoStdInternalError1(msg18);
+        throw new DenoStdInternalError1(msg);
     }
 }
 function copy1(src, dst, off = 0) {
@@ -1246,10 +1246,10 @@ class BufReader1 {
         if (p.byteLength === 0) return rr;
         if (this.#r === this.#w) {
             if (p.byteLength >= this.#buf.byteLength) {
-                const rr = await this.#rd.read(p);
-                const nread = rr ?? 0;
+                const rr1 = await this.#rd.read(p);
+                const nread = rr1 ?? 0;
                 assert1(nread >= 0, "negative read");
-                return rr;
+                return rr1;
             }
             this.#r = 0;
             this.#w = 0;
@@ -1403,12 +1403,12 @@ class BufReader1 {
         }
         return slice;
     }
-    async peek(n6) {
-        if (n6 < 0) {
+    async peek(n) {
+        if (n < 0) {
             throw Error("negative count");
         }
         let avail = this.#w - this.#r;
-        while(avail < n6 && avail < this.#buf.byteLength && !this.#eof){
+        while(avail < n && avail < this.#buf.byteLength && !this.#eof){
             try {
                 await this.#fill();
             } catch (err) {
@@ -1428,12 +1428,12 @@ class BufReader1 {
         }
         if (avail === 0 && this.#eof) {
             return null;
-        } else if (avail < n6 && this.#eof) {
+        } else if (avail < n && this.#eof) {
             return this.#buf.subarray(this.#r, this.#r + avail);
-        } else if (avail < n6) {
+        } else if (avail < n) {
             throw new BufferFullError1(this.#buf.subarray(this.#r, this.#w));
         }
-        return this.#buf.subarray(this.#r, this.#r + n6);
+        return this.#buf.subarray(this.#r, this.#r + n);
     }
 }
 class AbstractBufBase1 {
@@ -1587,8 +1587,8 @@ class BaseHandler1 {
     }
     handle(logRecord) {
         if (this.level > logRecord.level) return;
-        const msg19 = this.format(logRecord);
-        return this.log(msg19);
+        const msg = this.format(logRecord);
+        return this.log(msg);
     }
     format(logRecord) {
         if (this.formatter instanceof Function) {
@@ -1608,27 +1608,27 @@ class BaseHandler1 {
 }
 class ConsoleHandler1 extends BaseHandler1 {
     format(logRecord) {
-        let msg20 = super.format(logRecord);
+        let msg = super.format(logRecord);
         switch(logRecord.level){
             case LogLevels1.INFO:
-                msg20 = blue1(msg20);
+                msg = blue1(msg);
                 break;
             case LogLevels1.WARNING:
-                msg20 = yellow1(msg20);
+                msg = yellow1(msg);
                 break;
             case LogLevels1.ERROR:
-                msg20 = red1(msg20);
+                msg = red1(msg);
                 break;
             case LogLevels1.CRITICAL:
-                msg20 = bold1(red1(msg20));
+                msg = bold1(red1(msg));
                 break;
             default:
                 break;
         }
-        return msg20;
+        return msg;
     }
-    log(msg21) {
-        console.log(msg21);
+    log(msg) {
+        console.log(msg);
     }
 }
 class WriterHandler1 extends BaseHandler1 {
@@ -1669,11 +1669,11 @@ class FileHandler1 extends WriterHandler1 {
             this.flush();
         }
     }
-    log(msg22) {
-        if (this._encoder.encode(msg22).byteLength + 1 > this._buf.available()) {
+    log(msg) {
+        if (this._encoder.encode(msg).byteLength + 1 > this._buf.available()) {
             this.flush();
         }
-        this._buf.writeSync(this._encoder.encode(msg22 + "\n"));
+        this._buf.writeSync(this._encoder.encode(msg + "\n"));
     }
     flush() {
         if (this._buf?.buffered() > 0) {
@@ -1714,23 +1714,23 @@ class RotatingFileHandler1 extends FileHandler1 {
                 }
             }
         } else if (this._mode === "x") {
-            for(let i = 1; i <= this.#maxBackupCount; i++){
-                if (await exists1(this._filename + "." + i)) {
+            for(let i1 = 1; i1 <= this.#maxBackupCount; i1++){
+                if (await exists1(this._filename + "." + i1)) {
                     this.destroy();
-                    throw new Deno.errors.AlreadyExists("Backup log file " + this._filename + "." + i + " already exists");
+                    throw new Deno.errors.AlreadyExists("Backup log file " + this._filename + "." + i1 + " already exists");
                 }
             }
         } else {
             this.#currentFileSize = (await Deno.stat(this._filename)).size;
         }
     }
-    log(msg23) {
-        const msgByteLength = this._encoder.encode(msg23).byteLength + 1;
+    log(msg) {
+        const msgByteLength = this._encoder.encode(msg).byteLength + 1;
         if (this.#currentFileSize + msgByteLength > this.#maxBytes) {
             this.rotateLogFiles();
             this.#currentFileSize = 0;
         }
-        super.log(msg23);
+        super.log(msg);
         this.#currentFileSize += msgByteLength;
     }
     rotateLogFiles() {
@@ -1794,35 +1794,35 @@ function getLogger1(name) {
     }
     return result;
 }
-function debug1(msg24, ...args12) {
-    if (msg24 instanceof Function) {
-        return getLogger1("default").debug(msg24, ...args12);
+function debug1(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger1("default").debug(msg, ...args);
     }
-    return getLogger1("default").debug(msg24, ...args12);
+    return getLogger1("default").debug(msg, ...args);
 }
-function info1(msg25, ...args13) {
-    if (msg25 instanceof Function) {
-        return getLogger1("default").info(msg25, ...args13);
+function info1(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger1("default").info(msg, ...args);
     }
-    return getLogger1("default").info(msg25, ...args13);
+    return getLogger1("default").info(msg, ...args);
 }
-function warning1(msg26, ...args14) {
-    if (msg26 instanceof Function) {
-        return getLogger1("default").warning(msg26, ...args14);
+function warning1(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger1("default").warning(msg, ...args);
     }
-    return getLogger1("default").warning(msg26, ...args14);
+    return getLogger1("default").warning(msg, ...args);
 }
-function error1(msg27, ...args15) {
-    if (msg27 instanceof Function) {
-        return getLogger1("default").error(msg27, ...args15);
+function error1(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger1("default").error(msg, ...args);
     }
-    return getLogger1("default").error(msg27, ...args15);
+    return getLogger1("default").error(msg, ...args);
 }
-function critical1(msg28, ...args16) {
-    if (msg28 instanceof Function) {
-        return getLogger1("default").critical(msg28, ...args16);
+function critical1(msg, ...args) {
+    if (msg instanceof Function) {
+        return getLogger1("default").critical(msg, ...args);
     }
-    return getLogger1("default").critical(msg28, ...args16);
+    return getLogger1("default").critical(msg, ...args);
 }
 async function setup1(config) {
     state1.config = {
@@ -1839,27 +1839,27 @@ async function setup1(config) {
         handler.destroy();
     });
     state1.handlers.clear();
-    const handlers11 = state1.config.handlers || {};
-    for(const handlerName1 in handlers11){
-        const handler = handlers11[handlerName1];
+    const handlers = state1.config.handlers || {};
+    for(const handlerName in handlers){
+        const handler = handlers[handlerName];
         await handler.setup();
-        state1.handlers.set(handlerName1, handler);
+        state1.handlers.set(handlerName, handler);
     }
     state1.loggers.clear();
     const loggers = state1.config.loggers || {};
     for(const loggerName in loggers){
         const loggerConfig = loggers[loggerName];
         const handlerNames = loggerConfig.handlers || [];
-        const handlers2 = [];
+        const handlers1 = [];
         handlerNames.forEach((handlerName)=>{
             const handler = state1.handlers.get(handlerName);
             if (handler) {
-                handlers2.push(handler);
+                handlers1.push(handler);
             }
         });
         const levelName = loggerConfig.level || DEFAULT_LEVEL1;
         const logger = new Logger1(loggerName, levelName, {
-            handlers: handlers2
+            handlers: handlers1
         });
         state1.loggers.set(loggerName, logger);
     }
