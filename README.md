@@ -47,9 +47,10 @@ Refer to [functional_tests/README.md](functional_tests/README.md)
 
 ### Overview
 
-PNG image generated from `images/uml_diagram.mermaid`:
-
-![UML Diagram](https://raw.githubusercontent.com/flowscripter/template-deno-webapp/main/images/uml_diagram.png "UML Diagram")
+```mermaid
+classDiagram
+    Foo <|-- Bar
+```
 
 ### API
 
