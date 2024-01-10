@@ -1,6 +1,6 @@
 from behave import fixture, use_fixture
 from selenium.webdriver import Firefox
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver import FirefoxOptions
 from http.server import SimpleHTTPRequestHandler
 from functools import partial
 import socketserver
@@ -13,8 +13,8 @@ port = 8000
 
 @fixture
 def browser_firefox(context):
-    options = Options()
-    options.headless = True
+    options = FirefoxOptions()
+    options.add_argument("-headless")
     context.browser = Firefox(options=options)
     yield context.browser
     context.browser.quit()
